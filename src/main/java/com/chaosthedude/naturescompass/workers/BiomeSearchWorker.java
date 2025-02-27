@@ -20,14 +20,18 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	private final int sampleSpace;
 	private final int maxSamples;
 	public final int maxRadius;
-	private ServerWorld world;
-	private Identifier biomeID;
-	private BlockPos startPos;
+
+	private final ServerWorld world;
+	private final Identifier biomeID;
+	private final BlockPos startPos;
+
+	private Direction direction;
+	private final ItemStack stack;
+	private final PlayerEntity player;
+
 	private int samples;
 	private int nextLength;
-	private Direction direction;
-	private ItemStack stack;
-	private PlayerEntity player;
+
 	private int x;
 	private int z;
 	private int[] yValues;
@@ -127,11 +131,6 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 
 	private void succeed() {
 		NaturesCompass.LOGGER.info("Search succeeded: " + getRadius() + " radius, " + samples + " samples");
-		if (!stack.isEmpty() && stack.getItem() == NaturesCompass.NATURES_COMPASS_ITEM) {
-			((NaturesCompassItem) stack.getItem()).succeed(stack, player, x, z, samples, NaturesCompassConfig.displayCoordinates);
-		} else {
-			NaturesCompass.LOGGER.error("Invalid compass after search");
-		}
 		finished = true;
 	}
 	
@@ -155,7 +154,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 	}
 	
 	private int roundRadius(int radius, int roundTo) {
- 		return ((int) radius / roundTo) * roundTo;
+ 		return (radius / roundTo) * roundTo;
  	}
 
 }

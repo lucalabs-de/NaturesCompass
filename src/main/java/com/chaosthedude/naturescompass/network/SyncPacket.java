@@ -33,7 +33,6 @@ public class SyncPacket extends PacketByteBuf {
 	}
 
     public static void apply(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		final boolean canTeleport = buf.readBoolean();
 		final List<Identifier> allowedBiomeIDs = new ArrayList<Identifier>();
 		final ListMultimap<Identifier, Identifier> dimensionIDsForAllowedBiomeIDs = ArrayListMultimap.create();
 		int size = buf.readInt();
@@ -52,7 +51,6 @@ public class SyncPacket extends PacketByteBuf {
 		}
 		
 		client.execute(() -> {
-	        NaturesCompass.canTeleport = canTeleport;
 	        NaturesCompass.allowedBiomes = allowedBiomeIDs;
 	        NaturesCompass.dimensionIDsForAllowedBiomeIDs = dimensionIDsForAllowedBiomeIDs;
 		});

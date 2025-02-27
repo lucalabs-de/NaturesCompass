@@ -6,7 +6,7 @@
     "ServerMixin"
   ],
   "client": [
-    "HUDMixin",
+    "CartographyTableBlockMixin",
     "HeldItemRendererMixin"
   ],
   "injectors": {
