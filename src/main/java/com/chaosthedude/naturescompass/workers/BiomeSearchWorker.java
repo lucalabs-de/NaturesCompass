@@ -4,6 +4,7 @@ import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
 import com.chaosthedude.naturescompass.utils.BiomeUtils;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -21,7 +22,7 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
     private final int maxSamples;
     private final ServerWorld world;
     private final Identifier biomeId;
-    private final UUID compassId;
+    private final ItemStack stack;
     private final BlockPos startPos;
     private final PlayerEntity player;
     private Direction direction;
@@ -35,10 +36,10 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
     private boolean finished;
     private int lastRadiusThreshold;
 
-    public BiomeSearchWorker(ServerWorld world, PlayerEntity player, UUID compassId, Biome biome, BlockPos startPos) {
+    public BiomeSearchWorker(ServerWorld world, PlayerEntity player, ItemStack stack, Biome biome, BlockPos startPos) {
         this.world = world;
         this.player = player;
-        this.compassId = compassId;
+        this.stack = stack;
         this.startPos = startPos;
         x = startPos.getX();
         z = startPos.getZ();
@@ -56,9 +57,8 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
     }
 
     public void start() {
-        NaturesCompass.LOGGER.error("starting biome search worker");
         if (maxRadius > 0 && sampleSpace > 0) {
-            NaturesCompass.LOGGER.info("Starting search: " + sampleSpace + " sample space, " + maxSamples + " max samples, " + maxRadius + " max radius");
+            NaturesCompass.LOGGER.info("Starting search: {} sample space, {} max samples, {} max radius", sampleSpace, maxSamples, maxRadius);
             WorldWorkerManager.addWorker(this);
         } else {
             fail();
@@ -122,19 +122,19 @@ public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
     }
 
     private void succeed() {
-        NaturesCompass.LOGGER.info("Search succeeded: " + getRadius() + " radius, " + samples + " samples");
-        NaturesCompass.NATURES_COMPASS_ITEM.succeed(player, x, z, samples);
+        NaturesCompass.LOGGER.info("Search succeeded: {} radius, {} samples", getRadius(), samples);
+        NaturesCompass.NATURES_COMPASS_ITEM.succeed(stack, player, x, z, samples);
         finished = true;
     }
 
     private void fail() {
-        NaturesCompass.LOGGER.info("Search failed: " + getRadius() + " radius, " + samples + " samples");
-        NaturesCompass.NATURES_COMPASS_ITEM.fail(roundRadius(getRadius(), 500), samples);
+        NaturesCompass.LOGGER.info("Search failed: {} radius, {} samples", getRadius(), samples);
+        NaturesCompass.NATURES_COMPASS_ITEM.fail(stack, roundRadius(getRadius(), 500), samples);
         finished = true;
     }
 
     public void stop() {
-        NaturesCompass.LOGGER.info("Search stopped: " + getRadius() + " radius, " + samples + " samples");
+        NaturesCompass.LOGGER.info("Search stopped: {} radius, {} samples", getRadius(), samples);
         finished = true;
     }
 

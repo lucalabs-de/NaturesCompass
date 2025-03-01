@@ -202,7 +202,6 @@ public class BiomeChoiceScreenHandler extends ScreenHandler {
     }
 
     private void searchForBiome(PlayerEntity player, Biome biome, ItemStack compass) {
-        NaturesCompass.LOGGER.error("searching for biome {}", BiomeUtils.getBiomeName(world, biome));
         UUID compassId = NaturesCompass.NATURES_COMPASS_ITEM.getUuid(compass);
         ClientPlayNetworking.send(
                 SearchPacket.ID,

@@ -1,8 +1,10 @@
 package com.chaosthedude.naturescompass.network;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
+import com.chaosthedude.naturescompass.utils.ItemUtils;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -30,9 +32,13 @@ public class SearchPacket extends PacketByteBuf {
         final UUID compassId = buf.readUuid();
 
         server.execute(() -> {
-            NaturesCompass.LOGGER.error("executing search packet");
-            final ServerWorld world = player.getServerWorld();
-            NaturesCompass.NATURES_COMPASS_ITEM.searchForBiome(world, player, compassId, biomeID, pos);
+            ItemStack inInv = ItemUtils.getNatureCompassInInventory(player, compassId);
+            ItemStack underCursor = ItemUtils.getNatureCompassUnderCursor(player, compassId);
+            ItemStack compass = inInv.isEmpty() ? underCursor : inInv;
+            if (!compass.isEmpty()) {
+                final ServerWorld world = player.getServerWorld();
+                NaturesCompass.NATURES_COMPASS_ITEM.searchForBiome(world, player, compass, biomeID, pos);
+            }
         });
     }
 

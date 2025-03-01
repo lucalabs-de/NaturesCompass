@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.UUID;
 
@@ -26,15 +27,27 @@ public class ItemUtils {
 		return getHeldItem(player, NaturesCompass.NATURES_COMPASS_ITEM);
 	}
 
-	public static ItemStack getInventoryNatureCompass(PlayerEntity player, UUID compassId) {
+	public static ItemStack getNatureCompassInInventory(PlayerEntity player, UUID compassId) {
 		PlayerInventory inv = player.getInventory();
 
 		for (int i = 0; i < inv.size(); i++) {
 			ItemStack cur = inv.getStack(i);
-			NaturesCompass.LOGGER.error(cur.getItem().getName());
 			if (verifyNBT(cur)) {
 				if (cur.getNbt().contains("ID") && cur.getNbt().getUuid("ID").equals(compassId)) {
 					return cur;
+				}
+			}
+		}
+
+		return ItemStack.EMPTY;
+	}
+
+	public static ItemStack getNatureCompassUnderCursor(ServerPlayerEntity player, UUID compassId) {
+		ItemStack underCursor = player.currentScreenHandler.getCursorStack();
+		if (!underCursor.isEmpty()) {
+			if (verifyNBT(underCursor)) {
+				if (underCursor.getNbt().contains("ID") && underCursor.getNbt().getUuid("ID").equals(compassId)) {
+					return underCursor;
 				}
 			}
 		}

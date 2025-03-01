@@ -5,18 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bc69805b-4888-42c0-830f-8aaa7ea1b620" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/network/ResultPacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/NaturesCompass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/NaturesCompass.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/NaturesCompassClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/NaturesCompassClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/items/NaturesCompassItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/items/NaturesCompassItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/mixins/CartographyTableBlockMixin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/mixins/CartographyTableBlockMixin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/network/ResultPacket.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/network/SearchPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/network/SearchPacket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/screens/BiomeChoiceScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/screens/BiomeChoiceScreen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/screens/BiomeChoiceScreenHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/screens/BiomeChoiceScreenHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/utils/BiomeUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/utils/BiomeUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/utils/ItemUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/utils/ItemUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/workers/BiomeSearchWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/chaosthedude/naturescompass/workers/BiomeSearchWorker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/naturescompass/lang/en_us.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/naturescompass/lang/en_us.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

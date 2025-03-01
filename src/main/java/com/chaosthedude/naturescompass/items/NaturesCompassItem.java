@@ -1,7 +1,6 @@
 package com.chaosthedude.naturescompass.items;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.network.ResultPacket;
 import com.chaosthedude.naturescompass.utils.BiomeUtils;
 import com.chaosthedude.naturescompass.utils.CompassState;
 import com.chaosthedude.naturescompass.utils.ItemUtils;
@@ -48,29 +47,24 @@ public class NaturesCompassItem extends Item {
         }
     }
 
-    public void searchForBiome(ServerWorld world, PlayerEntity player, UUID compassId, Identifier biomeId, BlockPos pos) {
-        NaturesCompass.LOGGER.error("searching for biome in item");
+    public void searchForBiome(ServerWorld world, PlayerEntity player, ItemStack stack, Identifier biomeId, BlockPos pos) {
         Optional<Biome> optionalBiome = BiomeUtils.getBiomeForIdentifier(world, biomeId);
         if (optionalBiome.isPresent()) {
             if (worker != null) {
                 worker.stop();
             }
-            worker = new BiomeSearchWorker(world, player, compassId, optionalBiome.get(), pos);
+            worker = new BiomeSearchWorker(world, player, stack, optionalBiome.get(), pos);
             worker.start();
         }
     }
 
-    public void succeed(PlayerEntity player, UUID compassId, int x, int z, int samples) {
-//        setFound(stack, x, z, samples, player);
-        ServerPlayNetworking.send(
-                (ServerPlayerEntity) player,
-                ResultPacket.ID,
-                new ResultPacket(compassId, new BlockPos(x, 0, z)));
+    public void succeed(ItemStack stack, PlayerEntity player, int x, int z, int samples) {
+        setFound(stack, x, z, samples, player);
         worker = null;
     }
 
-    public void fail(int searchRadius, int samples) {
-//        setNotFound(stack, searchRadius, samples);
+    public void fail(ItemStack stack, int searchRadius, int samples) {
+        setNotFound(stack, searchRadius, samples);
         worker = null;
     }
 
