@@ -3,6 +3,8 @@ package com.chaosthedude.naturescompass;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.chaosthedude.naturescompass.network.ResultPacket;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.screen.ScreenHandlerType;
 import org.apache.logging.log4j.LogManager;
@@ -47,8 +49,9 @@ public class NaturesCompass implements ModInitializer {
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(entries -> entries.add(NATURES_COMPASS_ITEM));
 
         ServerPlayNetworking.registerGlobalReceiver(SearchPacket.ID, SearchPacket::apply);
+        ClientPlayNetworking.registerGlobalReceiver(ResultPacket.ID, ResultPacket::apply);
 
-        allowedBiomes = new ArrayList<Identifier>();
+        allowedBiomes = new ArrayList<>();
         dimensionIDsForAllowedBiomeIDs = ArrayListMultimap.create();
     }
 

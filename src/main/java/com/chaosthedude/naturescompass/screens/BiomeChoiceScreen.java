@@ -1,6 +1,5 @@
 package com.chaosthedude.naturescompass.screens;
 
-import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.utils.BiomeUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -9,8 +8,6 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.recipe.StonecuttingRecipe;
-import net.minecraft.screen.StonecutterScreenHandler;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -21,15 +18,7 @@ import java.util.List;
 
 public class BiomeChoiceScreen extends HandledScreen<BiomeChoiceScreenHandler> {
     private static final Identifier TEXTURE = new Identifier("textures/gui/container/stonecutter.png");
-    private static final int SCROLLBAR_WIDTH = 12;
-    private static final int SCROLLBAR_HEIGHT = 15;
-    private static final int BIOME_LIST_COLUMNS = 4;
-    private static final int BIOME_LIST_ROWS = 3;
-    private static final int BIOME_ENTRY_WIDTH = 16;
-    private static final int BIOME_ENTRY_HEIGHT = 18;
-    private static final int SCROLLBAR_AREA_HEIGHT = 54;
-    private static final int BIOME_LIST_OFFSET_X = 52;
-    private static final int BIOME_LIST_OFFSET_Y = 14;
+
     private float scrollAmount;
     private boolean mouseClicked;
     private int scrollOffset;
@@ -103,7 +92,7 @@ public class BiomeChoiceScreen extends HandledScreen<BiomeChoiceScreenHandler> {
             int k = this.scrollOffset + 12;
             List<Biome> list = this.handler.getAvailableBiomes();
 
-            for(int l = this.scrollOffset; l < k && l < this.handler.getAvailableBiomesCount(); ++l) {
+            for (int l = this.scrollOffset; l < k && l < this.handler.getAvailableBiomesCount(); ++l) {
                 int m = l - this.scrollOffset;
                 int n = i + m % 4 * 16;
                 int o = j + m / 4 * 18 + 2;
@@ -119,7 +108,7 @@ public class BiomeChoiceScreen extends HandledScreen<BiomeChoiceScreenHandler> {
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         this.mouseClicked = false;
-        if(this.canChoose) {
+        if (this.canChoose) {
             int i = this.x + 52;
             int j = this.y + 14;
             int k = this.scrollOffset + 12;
@@ -178,21 +167,50 @@ public class BiomeChoiceScreen extends HandledScreen<BiomeChoiceScreenHandler> {
     }
 
     private void onInventoryChange() {
-       this.canChoose = this.handler.getAreBiomesChoosable();
-       if (!this.canChoose) {
-           this.scrollAmount = 0.0F;
-           this.scrollOffset = 0;
-       }
+        this.canChoose = this.handler.getAreBiomesChoosable();
+        if (!this.canChoose) {
+            this.scrollAmount = 0.0F;
+            this.scrollOffset = 0;
+        }
     }
 
     private ItemStack getBiomeItem(Biome biome) {
         switch (BiomeUtils.getVegetationType(biome)) {
-            // TODO finish this
             case DARK_OAK -> {
-                return new ItemStack(Items.DARK_OAK_SAPLING, 1);
+                return new ItemStack(Items.DARK_OAK_SAPLING);
+            }
+            case MUSHROOM -> {
+                return new ItemStack(Items.RED_MUSHROOM);
+            }
+            case SPRUCE -> {
+                return new ItemStack(Items.SPRUCE_SAPLING);
+            }
+            case CHERRY -> {
+                return new ItemStack(Items.CHERRY_SAPLING);
+            }
+            case BIRCH -> {
+                return new ItemStack(Items.BIRCH_SAPLING);
+            }
+            case OAK -> {
+                return new ItemStack(Items.OAK_SAPLING);
+            }
+            case DEAD -> {
+                return new ItemStack(Items.DEAD_BUSH);
+            }
+            case ACACIA -> {
+                return new ItemStack(Items.ACACIA_SAPLING);
+            }
+            case BAMBOO -> {
+                return new ItemStack(Items.BAMBOO);
+            }
+            case CACTUS -> {
+                return new ItemStack(Items.CACTUS);
+            }
+            case JUNGLE -> {
+                return new ItemStack(Items.JUNGLE_SAPLING);
             }
             default -> {
-                return new ItemStack(Items.GRASS_BLOCK, 1);
+                return new ItemStack(Items.GRASS_BLOCK);
             }
         }
     }

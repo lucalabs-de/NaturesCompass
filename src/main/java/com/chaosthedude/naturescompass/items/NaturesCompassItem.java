@@ -1,14 +1,18 @@
 package com.chaosthedude.naturescompass.items;
 
+import com.chaosthedude.naturescompass.NaturesCompass;
+import com.chaosthedude.naturescompass.network.ResultPacket;
 import com.chaosthedude.naturescompass.utils.BiomeUtils;
 import com.chaosthedude.naturescompass.utils.CompassState;
 import com.chaosthedude.naturescompass.utils.ItemUtils;
 import com.chaosthedude.naturescompass.workers.BiomeSearchWorker;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -19,6 +23,7 @@ import net.minecraft.world.biome.Biome;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class NaturesCompassItem extends Item {
 
@@ -30,6 +35,10 @@ public class NaturesCompassItem extends Item {
 
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext type) {
+        if (world == null) {
+            return;
+        }
+
         Identifier associatedBiomeId = getBiomeID(stack);
         Optional<Biome> associatedBiome = BiomeUtils.getBiomeForIdentifier(world, associatedBiomeId);
 
@@ -39,34 +48,30 @@ public class NaturesCompassItem extends Item {
         }
     }
 
-    public void searchForBiome(ServerWorld world, PlayerEntity player, Identifier biomeID, BlockPos pos, ItemStack stack) {
-        setSearching(stack, biomeID, player);
-        Optional<Biome> optionalBiome = BiomeUtils.getBiomeForIdentifier(world, biomeID);
+    public void searchForBiome(ServerWorld world, PlayerEntity player, UUID compassId, Identifier biomeId, BlockPos pos) {
+        NaturesCompass.LOGGER.error("searching for biome in item");
+        Optional<Biome> optionalBiome = BiomeUtils.getBiomeForIdentifier(world, biomeId);
         if (optionalBiome.isPresent()) {
             if (worker != null) {
                 worker.stop();
             }
-            worker = new BiomeSearchWorker(world, player, stack, optionalBiome.get(), pos);
+            worker = new BiomeSearchWorker(world, player, compassId, optionalBiome.get(), pos);
             worker.start();
         }
     }
 
-    public void succeed(ItemStack stack, PlayerEntity player, int x, int z, int samples, boolean displayCoordinates) {
-        setFound(stack, x, z, samples, player);
+    public void succeed(PlayerEntity player, UUID compassId, int x, int z, int samples) {
+//        setFound(stack, x, z, samples, player);
+        ServerPlayNetworking.send(
+                (ServerPlayerEntity) player,
+                ResultPacket.ID,
+                new ResultPacket(compassId, new BlockPos(x, 0, z)));
         worker = null;
     }
 
-    public void fail(ItemStack stack, PlayerEntity player, int searchRadius, int samples) {
-        setNotFound(stack, player, searchRadius, samples);
+    public void fail(int searchRadius, int samples) {
+//        setNotFound(stack, searchRadius, samples);
         worker = null;
-    }
-
-    public boolean isActive(ItemStack stack) {
-        if (ItemUtils.verifyNBT(stack)) {
-            return getState(stack) != CompassState.INACTIVE;
-        }
-
-        return false;
     }
 
     public void setSearching(ItemStack stack, Identifier biomeID, PlayerEntity player) {
@@ -75,6 +80,16 @@ public class NaturesCompassItem extends Item {
             stack.getNbt().putInt("State", CompassState.SEARCHING.getID());
             stack.getNbt().putInt("SearchRadius", 0);
         }
+    }
+
+    public UUID getUuid(ItemStack stack) {
+        if (ItemUtils.verifyNBT(stack)) {
+            if (!stack.getNbt().contains("ID")) {
+                stack.getNbt().putUuid("ID", UUID.randomUUID());
+            }
+        }
+
+        return stack.getNbt().getUuid("ID");
     }
 
     public void setFound(ItemStack stack, int x, int z, int samples, PlayerEntity player) {
@@ -86,7 +101,7 @@ public class NaturesCompassItem extends Item {
         }
     }
 
-    public void setNotFound(ItemStack stack, PlayerEntity player, int searchRadius, int samples) {
+    public void setNotFound(ItemStack stack, int searchRadius, int samples) {
         if (ItemUtils.verifyNBT(stack)) {
             stack.getNbt().putInt("State", CompassState.NOT_FOUND.getID());
             stack.getNbt().putInt("SearchRadius", searchRadius);
@@ -94,39 +109,15 @@ public class NaturesCompassItem extends Item {
         }
     }
 
-    public void setInactive(ItemStack stack, PlayerEntity player) {
-        if (ItemUtils.verifyNBT(stack)) {
-            stack.getNbt().putInt("State", CompassState.INACTIVE.getID());
-        }
-    }
-
-    public void setState(ItemStack stack, BlockPos pos, CompassState state, PlayerEntity player) {
-        if (ItemUtils.verifyNBT(stack)) {
-            stack.getNbt().putInt("State", state.getID());
-        }
-    }
-
-    public void setFoundBiomeZ(ItemStack stack, int z, PlayerEntity player) {
-        if (ItemUtils.verifyNBT(stack)) {
-            stack.getNbt().putInt("FoundZ", z);
-        }
-    }
-
-    public void setBiomeID(ItemStack stack, Identifier biomeID, PlayerEntity player) {
+    public void setBiomeID(ItemStack stack, Identifier biomeID) {
         if (ItemUtils.verifyNBT(stack)) {
             stack.getNbt().putString("BiomeID", biomeID.toString());
         }
     }
 
-    public void setSearchRadius(ItemStack stack, int searchRadius, PlayerEntity player) {
+    public void setSearchRadius(ItemStack stack, int searchRadius) {
         if (ItemUtils.verifyNBT(stack)) {
             stack.getNbt().putInt("SearchRadius", searchRadius);
-        }
-    }
-
-    public void setSamples(ItemStack stack, int samples, PlayerEntity player) {
-        if (ItemUtils.verifyNBT(stack)) {
-            stack.getNbt().putInt("Samples", samples);
         }
     }
 
@@ -161,33 +152,4 @@ public class NaturesCompassItem extends Item {
 
         return new Identifier("");
     }
-
-    public int getSearchRadius(ItemStack stack) {
-        if (ItemUtils.verifyNBT(stack)) {
-            return stack.getNbt().getInt("SearchRadius");
-        }
-
-        return -1;
-    }
-
-    public int getSamples(ItemStack stack) {
-        if (ItemUtils.verifyNBT(stack)) {
-            return stack.getNbt().getInt("Samples");
-        }
-
-        return -1;
-    }
-
-    public int getDistanceToBiome(PlayerEntity player, ItemStack stack) {
-        return BiomeUtils.getDistanceToBiome(player, getFoundBiomeX(stack), getFoundBiomeZ(stack));
-    }
-
-    public boolean shouldDisplayCoordinates(ItemStack stack) {
-        if (ItemUtils.verifyNBT(stack) && stack.getNbt().contains("DisplayCoordinates")) {
-            return stack.getNbt().getBoolean("DisplayCoordinates");
-        }
-
-        return true;
-    }
-
 }

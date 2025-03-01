@@ -71,7 +71,7 @@ public class NaturesCompassClient implements ClientModInitializer {
 			}
 
 			private double getFrameRotation(ItemFrameEntity itemFrame) {
-				return (double) MathHelper.wrapDegrees(180 + itemFrame.getHorizontalFacing().getHorizontal() * 90);
+				return MathHelper.wrapDegrees(180 + itemFrame.getHorizontalFacing().getHorizontal() * 90);
 			}
 
 			private double getAngle(ClientWorld world, Entity entity, ItemStack stack) {

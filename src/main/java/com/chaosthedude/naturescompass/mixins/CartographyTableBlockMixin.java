@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(CartographyTableBlock.class)
 public class CartographyTableBlockMixin {
     @Unique
-    private static final Text BIOME_TITLE = Text.translatable("string.naturescompass.biomes");
+    private static final Text BIOME_TITLE = Text.translatable("string.naturescompass.biome_table");
 
     @Inject(method = "onUse", at = @At("HEAD"), cancellable = true)
     private void onUse(

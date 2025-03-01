@@ -2,25 +2,25 @@ package com.chaosthedude.naturescompass.screens;
 
 import com.chaosthedude.naturescompass.NaturesCompass;
 import com.chaosthedude.naturescompass.items.NaturesCompassItem;
+import com.chaosthedude.naturescompass.network.SearchPacket;
 import com.chaosthedude.naturescompass.utils.BiomeUtils;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.Property;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
+import java.util.UUID;
 
 public class BiomeChoiceScreenHandler extends ScreenHandler {
     final Slot inputSlot;
@@ -32,9 +32,8 @@ public class BiomeChoiceScreenHandler extends ScreenHandler {
     private final World world;
     private final Property selectedBiome;
     private final List<Biome> availableBiomes;
-    private boolean areBiomesChoosable;
-
     Runnable contentsChangedListener;
+    private boolean areBiomesChoosable;
 
     public BiomeChoiceScreenHandler(int syncId, PlayerInventory playerInventory) {
         super(NaturesCompass.BIOME_SCREEN_HANDLER, syncId);
@@ -63,10 +62,11 @@ public class BiomeChoiceScreenHandler extends ScreenHandler {
             }
 
             public void onTakeItem(PlayerEntity player, ItemStack stack) {
-                // TODO start biome search based on item metadata
-                ItemStack itemStack = BiomeChoiceScreenHandler.this.inputSlot.takeStack(1);
-                if (!itemStack.isEmpty()) {
-                    populateResult(player);
+                if (isInBounds(selectedBiome.get())) {
+                    Biome biome = availableBiomes.get(selectedBiome.get());
+
+                    inputSlot.takeStack(1);
+                    searchForBiome(player, biome, stack);
                 }
 
                 super.onTakeItem(player, stack);
@@ -109,7 +109,7 @@ public class BiomeChoiceScreenHandler extends ScreenHandler {
         }
 
         if (slot.inventory == this.input) {
-           return stack.getItem() instanceof NaturesCompassItem;
+            return stack.getItem() instanceof NaturesCompassItem;
         }
 
         return super.canInsertIntoSlot(stack, slot);
@@ -119,10 +119,9 @@ public class BiomeChoiceScreenHandler extends ScreenHandler {
         if (!this.availableBiomes.isEmpty() && this.isInBounds(this.selectedBiome.get())) {
             Biome biome = this.availableBiomes.get(this.selectedBiome.get());
             ItemStack newCompass = inputSlot.getStack().copy();
-            NaturesCompass.NATURES_COMPASS_ITEM.setSearching(
+            NaturesCompass.NATURES_COMPASS_ITEM.setBiomeID(
                     newCompass,
-                    BiomeUtils.getIdentifierForBiome(world, biome),
-                    player
+                    BiomeUtils.getIdentifierForBiome(world, biome)
             );
             this.outputSlot.setStackNoCallbacks(newCompass);
         } else {
@@ -138,24 +137,22 @@ public class BiomeChoiceScreenHandler extends ScreenHandler {
         Slot slot = this.slots.get(invSlot);
         if (slot.hasStack()) {
             ItemStack originalStack = slot.getStack();
-            Item item = originalStack.getItem();
             newStack = originalStack.copy();
-            if (invSlot == 1) { // took output
+            if (invSlot == 1) {
                 if (!this.insertItem(originalStack, 2, 38, true)) {
                     return ItemStack.EMPTY;
                 }
 
                 slot.onQuickTransfer(originalStack, newStack);
-            } else if (invSlot == 0) { // took input
+            } else if (invSlot == 0) {
                 if (!this.insertItem(originalStack, 2, 38, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (invSlot >= 2 && invSlot < 29) { // moved inventory item?
+            } else if (invSlot >= 2 && invSlot < 29) {
                 if (!this.insertItem(originalStack, 29, 38, false)) {
                     return ItemStack.EMPTY;
                 }
             } else if (invSlot >= 29 && invSlot < 38 && !this.insertItem(originalStack, 2, 29, false)) {
-                // moved hotbar item?
                 return ItemStack.EMPTY;
             }
 
@@ -204,10 +201,11 @@ public class BiomeChoiceScreenHandler extends ScreenHandler {
         return id >= 0 && id < this.availableBiomes.size();
     }
 
-    private void searchForBiome() {
-//        if (BiomeUtils.getKeyForBiome(level, biome).isPresent()) {
-//            NaturesCompass.network.send(new CompassSearchPacket(BiomeUtils.getKeyForBiome(level, biome).get(), player.blockPosition()), PacketDistributor.SERVER.noArg());
-//        }
-//        minecraft.setScreen(null);
+    private void searchForBiome(PlayerEntity player, Biome biome, ItemStack compass) {
+        NaturesCompass.LOGGER.error("searching for biome {}", BiomeUtils.getBiomeName(world, biome));
+        UUID compassId = NaturesCompass.NATURES_COMPASS_ITEM.getUuid(compass);
+        ClientPlayNetworking.send(
+                SearchPacket.ID,
+                new SearchPacket(compassId, BiomeUtils.getIdentifierForBiome(world, biome), player.getBlockPos()));
     }
 }
