@@ -34,7 +34,7 @@ public class BiomeChoiceScreen extends HandledScreen<BiomeChoiceScreenHandler> {
             entry(new Identifier("minecraft", "old_growth_birch_forest"), Items.BIRCH_LOG),
             entry(new Identifier("minecraft", "dark_forest"), Items.DARK_OAK_SAPLING),
             entry(new Identifier("minecraft", "jungle"), Items.JUNGLE_SAPLING),
-            entry(new Identifier("minecraft", "sparse_jungle"), Items.JUNGLE_LEAVES),
+            entry(new Identifier("minecraft", "sparse_jungle"), Items.JUNGLE_SAPLING),
             entry(new Identifier("minecraft", "bamboo_jungle"), Items.BAMBOO),
             entry(new Identifier("minecraft", "taiga"), Items.SPRUCE_SAPLING),
             entry(new Identifier("minecraft", "snowy_taiga"), Items.SNOW_BLOCK),

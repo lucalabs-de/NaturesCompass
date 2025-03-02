@@ -65,14 +65,6 @@ public class NaturesCompassItem extends Item {
         worker = null;
     }
 
-    public void setSearching(ItemStack stack, Identifier biomeID, PlayerEntity player) {
-        if (ItemUtils.verifyNBT(stack)) {
-            stack.getNbt().putString("BiomeID", biomeID.toString());
-            stack.getNbt().putInt("State", CompassState.SEARCHING.getID());
-            stack.getNbt().putInt("SearchRadius", 0);
-        }
-    }
-
     public UUID getUuid(ItemStack stack) {
         if (ItemUtils.verifyNBT(stack)) {
             if (!stack.getNbt().contains("ID")) {
@@ -104,12 +96,6 @@ public class NaturesCompassItem extends Item {
     public void setBiomeID(ItemStack stack, Identifier biomeID) {
         if (ItemUtils.verifyNBT(stack)) {
             stack.getNbt().putString("BiomeID", biomeID.toString());
-        }
-    }
-
-    public void setSearchRadius(ItemStack stack, int searchRadius) {
-        if (ItemUtils.verifyNBT(stack)) {
-            stack.getNbt().putInt("SearchRadius", searchRadius);
         }
     }
 
