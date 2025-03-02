@@ -1,7 +1,7 @@
-package com.chaosthedude.naturescompass.network;
+package com.lucalabs.naturescompass.network;
 
-import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.utils.ItemUtils;
+import com.lucalabs.naturescompass.NaturesCompass;
+import com.lucalabs.naturescompass.utils.ItemUtils;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.item.ItemStack;

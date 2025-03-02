@@ -1,10 +1,9 @@
-package com.chaosthedude.naturescompass.utils;
+package com.lucalabs.naturescompass.utils;
 
-import com.chaosthedude.naturescompass.NaturesCompass;
+import com.lucalabs.naturescompass.NaturesCompass;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -21,10 +20,6 @@ public class ItemUtils {
 		}
 
 		return true;
-	}
-
-	public static ItemStack getHeldNatureCompass(PlayerEntity player) {
-		return getHeldItem(player, NaturesCompass.NATURES_COMPASS_ITEM);
 	}
 
 	public static ItemStack getNatureCompassInInventory(PlayerEntity player, UUID compassId) {
@@ -54,15 +49,4 @@ public class ItemUtils {
 
 		return ItemStack.EMPTY;
 	}
-
-	public static ItemStack getHeldItem(PlayerEntity player, Item item) {
-		if (!player.getMainHandStack().isEmpty() && player.getMainHandStack().getItem() == item) {
-			return player.getMainHandStack();
-		} else if (!player.getOffHandStack().isEmpty() && player.getOffHandStack().getItem() == item) {
-			return player.getOffHandStack();
-		}
-
-		return ItemStack.EMPTY;
-	}
-
 }

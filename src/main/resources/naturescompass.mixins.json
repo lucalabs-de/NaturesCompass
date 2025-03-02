@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "com.chaosthedude.naturescompass.mixins",
+  "package": "com.lucalabs.naturescompass.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "ServerMixin"

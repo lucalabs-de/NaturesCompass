@@ -1,9 +1,9 @@
-package com.chaosthedude.naturescompass.screens;
+package com.lucalabs.naturescompass.screens;
 
-import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.items.NaturesCompassItem;
-import com.chaosthedude.naturescompass.network.SearchPacket;
-import com.chaosthedude.naturescompass.utils.BiomeUtils;
+import com.lucalabs.naturescompass.NaturesCompass;
+import com.lucalabs.naturescompass.items.NaturesCompassItem;
+import com.lucalabs.naturescompass.network.SearchPacket;
+import com.lucalabs.naturescompass.utils.BiomeUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,6 +16,7 @@ import net.minecraft.screen.Property;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
@@ -32,15 +33,21 @@ public class BiomeChoiceScreenHandler extends ScreenHandler {
     private final World world;
     private final Property selectedBiome;
     private final List<Biome> availableBiomes;
+    private final ScreenHandlerContext context;
     Runnable contentsChangedListener;
     private boolean areBiomesChoosable;
 
     public BiomeChoiceScreenHandler(int syncId, PlayerInventory playerInventory) {
+        this(syncId, playerInventory, ScreenHandlerContext.EMPTY);
+    }
+
+    public BiomeChoiceScreenHandler(int syncId, PlayerInventory playerInventory, final ScreenHandlerContext context) {
         super(NaturesCompass.BIOME_SCREEN_HANDLER, syncId);
 
         this.world = playerInventory.player.getWorld();
         this.contentsChangedListener = () -> {
         };
+        this.context = context;
 
         this.selectedBiome = Property.create();
         this.availableBiomes = BiomeUtils.getAllowedBiomes(world);
@@ -62,6 +69,7 @@ public class BiomeChoiceScreenHandler extends ScreenHandler {
             }
 
             public void onTakeItem(PlayerEntity player, ItemStack stack) {
+                NaturesCompass.LOGGER.error("onTakeItem {}", stack.getItem().toString());
                 if (isInBounds(selectedBiome.get())) {
                     Biome biome = availableBiomes.get(selectedBiome.get());
 
@@ -165,7 +173,7 @@ public class BiomeChoiceScreenHandler extends ScreenHandler {
                 return ItemStack.EMPTY;
             }
 
-            slot.onTakeItem(player, originalStack);
+            slot.onTakeItem(player, newStack);
             this.sendContentUpdates();
         }
 
@@ -175,6 +183,14 @@ public class BiomeChoiceScreenHandler extends ScreenHandler {
     @Override
     public boolean canUse(PlayerEntity player) {
         return canUse(ScreenHandlerContext.EMPTY, player, Blocks.CARTOGRAPHY_TABLE);
+    }
+
+    public void onClosed(PlayerEntity player) {
+        super.onClosed(player);
+        this.output.removeStack(1);
+        context.run((world, pos) -> {
+            this.dropInventory(player, this.input);
+        });
     }
 
     public List<Biome> getAvailableBiomes() {
@@ -193,6 +209,13 @@ public class BiomeChoiceScreenHandler extends ScreenHandler {
         return this.areBiomesChoosable;
     }
 
+    public Identifier getBiomeIdentifierAt(int i) {
+        if (isInBounds(i)) {
+            return BiomeUtils.getIdentifierForBiome(world, this.availableBiomes.get(i));
+        }
+        return null;
+    }
+
     public void setContentsChangedListener(Runnable contentsChangedListener) {
         this.contentsChangedListener = contentsChangedListener;
     }
@@ -203,8 +226,10 @@ public class BiomeChoiceScreenHandler extends ScreenHandler {
 
     private void searchForBiome(PlayerEntity player, Biome biome, ItemStack compass) {
         UUID compassId = NaturesCompass.NATURES_COMPASS_ITEM.getUuid(compass);
-        ClientPlayNetworking.send(
-                SearchPacket.ID,
-                new SearchPacket(compassId, BiomeUtils.getIdentifierForBiome(world, biome), player.getBlockPos()));
+        if (compassId != null) {
+            ClientPlayNetworking.send(
+                    SearchPacket.ID,
+                    new SearchPacket(compassId, BiomeUtils.getIdentifierForBiome(world, biome), player.getBlockPos()));
+        }
     }
 }

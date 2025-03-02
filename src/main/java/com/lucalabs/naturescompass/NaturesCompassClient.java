@@ -1,9 +1,9 @@
-package com.chaosthedude.naturescompass;
+package com.lucalabs.naturescompass;
 
-import com.chaosthedude.naturescompass.items.NaturesCompassItem;
-import com.chaosthedude.naturescompass.network.SyncPacket;
-import com.chaosthedude.naturescompass.utils.CompassState;
-import com.chaosthedude.naturescompass.screens.BiomeChoiceScreen;
+import com.lucalabs.naturescompass.items.NaturesCompassItem;
+import com.lucalabs.naturescompass.network.SyncPacket;
+import com.lucalabs.naturescompass.utils.CompassState;
+import com.lucalabs.naturescompass.screens.BiomeChoiceScreen;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;

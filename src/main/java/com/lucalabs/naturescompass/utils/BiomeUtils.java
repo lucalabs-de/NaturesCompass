@@ -1,6 +1,6 @@
-package com.chaosthedude.naturescompass.utils;
+package com.lucalabs.naturescompass.utils;
 
-import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
+import com.lucalabs.naturescompass.config.NaturesCompassConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.resource.language.I18n;
@@ -8,7 +8,6 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
@@ -16,10 +15,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.GenerationSettings;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.feature.PlacedFeature;
-import net.minecraft.world.gen.feature.VegetationPlacedFeatures;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,50 +90,6 @@ public class BiomeUtils {
     @Environment(EnvType.CLIENT)
     public static String getBiomeName(World world, Biome biome) {
         return I18n.translate(Util.createTranslationKey("biome", getIdentifierForBiome(world, biome)));
-    }
-
-    @Environment(EnvType.CLIENT)
-    public static BiomeVegetation getVegetationType(Biome biome) {
-        GenerationSettings genSettings = biome.getGenerationSettings();
-        int vegetationFeatureIndex = GenerationStep.Feature.VEGETAL_DECORATION.ordinal();
-
-        if (GenerationStep.Feature.VEGETAL_DECORATION.ordinal() >= genSettings.getFeatures().size()) {
-            return BiomeVegetation.UNKNOWN;
-        }
-
-        RegistryEntryList<PlacedFeature> vegetationFeatures = genSettings.getFeatures().get(vegetationFeatureIndex);
-
-        for (RegistryEntry<PlacedFeature> f : vegetationFeatures) {
-            if (f.matchesKey(VegetationPlacedFeatures.TREES_JUNGLE)
-                    || f.matchesKey(VegetationPlacedFeatures.TREES_SPARSE_JUNGLE)) {
-                return BiomeVegetation.JUNGLE;
-            } else if (f.matchesKey(VegetationPlacedFeatures.MUSHROOM_ISLAND_VEGETATION)) {
-                return BiomeVegetation.MUSHROOM;
-            } else if (f.matchesKey(VegetationPlacedFeatures.TREES_CHERRY)) {
-                return BiomeVegetation.CHERRY;
-            } else if (f.matchesKey(VegetationPlacedFeatures.TREES_TAIGA)
-                    || f.matchesKey(VegetationPlacedFeatures.TREES_SNOWY)) {
-                return BiomeVegetation.SPRUCE;
-            } else if (f.matchesKey(VegetationPlacedFeatures.TREES_BADLANDS)) {
-                return BiomeVegetation.DEAD;
-            } else if (f.matchesKey(VegetationPlacedFeatures.BAMBOO)) {
-                return BiomeVegetation.BAMBOO;
-            } else if (f.matchesKey(VegetationPlacedFeatures.TREES_SAVANNA)) {
-                return BiomeVegetation.ACACIA;
-            } else if (f.matchesKey(VegetationPlacedFeatures.TREES_GROVE)) {
-                return BiomeVegetation.DARK_OAK;
-            } else if (f.matchesKey(VegetationPlacedFeatures.TREES_BIRCH)) {
-                return BiomeVegetation.BIRCH;
-            } else if (f.matchesKey(VegetationPlacedFeatures.TREES_BIRCH_AND_OAK)) {
-                return BiomeVegetation.OAK;
-            } else if (f.matchesKey(VegetationPlacedFeatures.PATCH_CACTUS_DESERT)) {
-                return BiomeVegetation.CACTUS;
-            } else {
-                return BiomeVegetation.UNKNOWN;
-            }
-        }
-
-        return BiomeVegetation.UNKNOWN;
     }
 
     public static boolean biomeIdIsBlacklisted(World world, Identifier biomeID) {

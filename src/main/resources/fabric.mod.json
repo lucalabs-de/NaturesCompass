@@ -3,14 +3,15 @@
   "id": "naturescompass",
   "version": "${version}",
 
-  "name": "Nature's Compass",
+  "name": "Nature's Compass Immersive",
   "description": "Search for a biome and get information about it.",
   "authors": [
+    "lucalabs-de",
     "ChaosTheDude"
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/natures-compass",
-    "sources": "https://github.com/MattCzyr/NaturesCompass"
+    "sources": "https://github.com/lucalabs-de/NaturesCompass"
   },
 
   "license": "CC BY-NC-SA 4.0",
@@ -19,10 +20,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.chaosthedude.naturescompass.NaturesCompass"
+      "com.lucalabs.naturescompass.NaturesCompass"
     ],
     "client": [
-      "com.chaosthedude.naturescompass.NaturesCompassClient"
+      "com.lucalabs.naturescompass.NaturesCompassClient"
     ]
   },
   "mixins": [

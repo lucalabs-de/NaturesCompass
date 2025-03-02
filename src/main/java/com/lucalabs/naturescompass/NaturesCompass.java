@@ -1,18 +1,17 @@
-package com.chaosthedude.naturescompass;
+package com.lucalabs.naturescompass;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.screen.ScreenHandlerType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.chaosthedude.naturescompass.screens.BiomeChoiceScreenHandler;
-import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
-import com.chaosthedude.naturescompass.items.NaturesCompassItem;
-import com.chaosthedude.naturescompass.network.SearchPacket;
+import com.lucalabs.naturescompass.screens.BiomeChoiceScreenHandler;
+import com.lucalabs.naturescompass.config.NaturesCompassConfig;
+import com.lucalabs.naturescompass.items.NaturesCompassItem;
+import com.lucalabs.naturescompass.network.SearchPacket;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 

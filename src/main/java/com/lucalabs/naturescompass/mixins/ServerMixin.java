@@ -1,4 +1,4 @@
-package com.chaosthedude.naturescompass.mixins;
+package com.lucalabs.naturescompass.mixins;
 
 import java.util.function.BooleanSupplier;
 
@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.chaosthedude.naturescompass.workers.WorldWorkerManager;
+import com.lucalabs.naturescompass.workers.WorldWorkerManager;
 
 import net.minecraft.server.MinecraftServer;
 

@@ -1,11 +1,12 @@
-package com.chaosthedude.naturescompass.screens;
+package com.lucalabs.naturescompass.screens;
 
-import com.chaosthedude.naturescompass.utils.BiomeUtils;
+import com.lucalabs.naturescompass.utils.BiomeUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvents;
@@ -15,9 +16,68 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 
 import java.util.List;
+import java.util.Map;
+
+import static java.util.Map.entry;
 
 public class BiomeChoiceScreen extends HandledScreen<BiomeChoiceScreenHandler> {
     private static final Identifier TEXTURE = new Identifier("textures/gui/container/stonecutter.png");
+    private static final Item DEFAULT_ICON = Items.GRASS_BLOCK;
+    private static final Map<Identifier, Item> BIOME_ICONS = Map.ofEntries(
+            entry(new Identifier("minecraft", "plains"), Items.GRASS_BLOCK),
+            entry(new Identifier("minecraft", "snowy_plains"), Items.SNOW_BLOCK),
+            entry(new Identifier("minecraft", "sunflower_plains"), Items.SUNFLOWER),
+            entry(new Identifier("minecraft", "meadow"), Items.CORNFLOWER),
+            entry(new Identifier("minecraft", "forest"), Items.OAK_SAPLING),
+            entry(new Identifier("minecraft", "flower_forest"), Items.ALLIUM),
+            entry(new Identifier("minecraft", "birch_forest"), Items.BIRCH_SAPLING),
+            entry(new Identifier("minecraft", "old_growth_birch_forest"), Items.BIRCH_LOG),
+            entry(new Identifier("minecraft", "dark_forest"), Items.DARK_OAK_SAPLING),
+            entry(new Identifier("minecraft", "jungle"), Items.JUNGLE_SAPLING),
+            entry(new Identifier("minecraft", "sparse_jungle"), Items.JUNGLE_LEAVES),
+            entry(new Identifier("minecraft", "bamboo_jungle"), Items.BAMBOO),
+            entry(new Identifier("minecraft", "taiga"), Items.SPRUCE_SAPLING),
+            entry(new Identifier("minecraft", "snowy_taiga"), Items.SNOW_BLOCK),
+            entry(new Identifier("minecraft", "old_growth_pine_taiga"), Items.SPRUCE_LOG),
+            entry(new Identifier("minecraft", "old_growth_spruce_taiga"), Items.SPRUCE_LOG),
+            entry(new Identifier("minecraft", "savanna"), Items.ACACIA_SAPLING),
+            entry(new Identifier("minecraft", "savanna_plateau"), Items.TERRACOTTA),
+            entry(new Identifier("minecraft", "windswept_savanna"), Items.ACACIA_LOG),
+            entry(new Identifier("minecraft", "desert"), Items.CACTUS),
+            entry(new Identifier("minecraft", "badlands"), Items.RED_SAND),
+            entry(new Identifier("minecraft", "eroded_badlands"), Items.ORANGE_TERRACOTTA),
+            entry(new Identifier("minecraft", "wooded_badlands"), Items.DEAD_BUSH),
+            entry(new Identifier("minecraft", "windswept_hills"), Items.STONE),
+            entry(new Identifier("minecraft", "windswept_gravelly_hills"), Items.GRAVEL),
+            entry(new Identifier("minecraft", "windswept_forest"), Items.OAK_LOG),
+            entry(new Identifier("minecraft", "swamp"), Items.LILY_PAD),
+            entry(new Identifier("minecraft", "mangrove_swamp"), Items.MANGROVE_PROPAGULE),
+            entry(new Identifier("minecraft", "river"), Items.WATER_BUCKET),
+            entry(new Identifier("minecraft", "frozen_river"), Items.ICE),
+            entry(new Identifier("minecraft", "beach"), Items.SAND),
+            entry(new Identifier("minecraft", "snowy_beach"), Items.SNOWBALL),
+            entry(new Identifier("minecraft", "stony_shore"), Items.COBBLESTONE),
+            entry(new Identifier("minecraft", "ice_spikes"), Items.PACKED_ICE),
+            entry(new Identifier("minecraft", "mushroom_fields"), Items.RED_MUSHROOM),
+            entry(new Identifier("minecraft", "dripstone_caves"), Items.DRIPSTONE_BLOCK),
+            entry(new Identifier("minecraft", "lush_caves"), Items.MOSS_BLOCK),
+            entry(new Identifier("minecraft", "deep_dark"), Items.SCULK),
+            entry(new Identifier("minecraft", "grove"), Items.POWDER_SNOW_BUCKET),
+            entry(new Identifier("minecraft", "snowy_slopes"), Items.SNOW),
+            entry(new Identifier("minecraft", "jagged_peaks"), Items.PACKED_ICE),
+            entry(new Identifier("minecraft", "frozen_peaks"), Items.SNOW_BLOCK),
+            entry(new Identifier("minecraft", "stony_peaks"), Items.STONE),
+            entry(new Identifier("minecraft", "cherry_grove"), Items.CHERRY_SAPLING),
+            entry(new Identifier("minecraft", "ocean"), Items.WATER_BUCKET),
+            entry(new Identifier("minecraft", "deep_ocean"), Items.PRISMARINE),
+            entry(new Identifier("minecraft", "warm_ocean"), Items.TROPICAL_FISH_BUCKET),
+            entry(new Identifier("minecraft", "lukewarm_ocean"), Items.SEAGRASS),
+            entry(new Identifier("minecraft", "deep_lukewarm_ocean"), Items.SEAGRASS),
+            entry(new Identifier("minecraft", "cold_ocean"), Items.COD_BUCKET),
+            entry(new Identifier("minecraft", "deep_cold_ocean"), Items.COD_BUCKET),
+            entry(new Identifier("minecraft", "frozen_ocean"), Items.BLUE_ICE),
+            entry(new Identifier("minecraft", "deep_frozen_ocean"), Items.BLUE_ICE)
+    );
 
     private float scrollAmount;
     private boolean mouseClicked;
@@ -70,7 +130,6 @@ public class BiomeChoiceScreen extends HandledScreen<BiomeChoiceScreenHandler> {
     }
 
     private void renderRecipeIcons(DrawContext context, int x, int y, int scrollOffset) {
-        // TODO the biome icons could always be nicer. Currently they are simply the saplings of the trees that grow in the corresponding biome
         if (this.canChoose) {
             List<Biome> list = this.handler.getAvailableBiomes();
 
@@ -79,7 +138,7 @@ public class BiomeChoiceScreen extends HandledScreen<BiomeChoiceScreenHandler> {
                 int k = x + j % 4 * 16;
                 int l = j / 4;
                 int m = y + l * 18 + 2;
-                context.drawItem(getBiomeItem(this.handler.getAvailableBiomes().get(i)), k, m);
+                context.drawItem(getBiomeItem(i), k, m);
             }
         }
     }
@@ -174,44 +233,13 @@ public class BiomeChoiceScreen extends HandledScreen<BiomeChoiceScreenHandler> {
         }
     }
 
-    private ItemStack getBiomeItem(Biome biome) {
-        switch (BiomeUtils.getVegetationType(biome)) {
-            case DARK_OAK -> {
-                return new ItemStack(Items.DARK_OAK_SAPLING);
-            }
-            case MUSHROOM -> {
-                return new ItemStack(Items.RED_MUSHROOM);
-            }
-            case SPRUCE -> {
-                return new ItemStack(Items.SPRUCE_SAPLING);
-            }
-            case CHERRY -> {
-                return new ItemStack(Items.CHERRY_SAPLING);
-            }
-            case BIRCH -> {
-                return new ItemStack(Items.BIRCH_SAPLING);
-            }
-            case OAK -> {
-                return new ItemStack(Items.OAK_SAPLING);
-            }
-            case DEAD -> {
-                return new ItemStack(Items.DEAD_BUSH);
-            }
-            case ACACIA -> {
-                return new ItemStack(Items.ACACIA_SAPLING);
-            }
-            case BAMBOO -> {
-                return new ItemStack(Items.BAMBOO);
-            }
-            case CACTUS -> {
-                return new ItemStack(Items.CACTUS);
-            }
-            case JUNGLE -> {
-                return new ItemStack(Items.JUNGLE_SAPLING);
-            }
-            default -> {
-                return new ItemStack(Items.GRASS_BLOCK);
-            }
+    private ItemStack getBiomeItem(int i) {
+        Biome b = this.handler.getAvailableBiomes().get(i);
+        if (b != null) {
+            Item icon = BIOME_ICONS.getOrDefault(this.handler.getBiomeIdentifierAt(i), DEFAULT_ICON);
+            return new ItemStack(icon);
         }
+
+        return ItemStack.EMPTY;
     }
 }

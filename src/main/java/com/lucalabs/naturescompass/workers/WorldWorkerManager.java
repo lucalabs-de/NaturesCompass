@@ -1,4 +1,4 @@
-package com.chaosthedude.naturescompass.workers;
+package com.lucalabs.naturescompass.workers;
 
 import java.util.ArrayList;
 import java.util.List;

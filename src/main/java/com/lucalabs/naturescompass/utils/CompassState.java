@@ -1,4 +1,4 @@
-package com.chaosthedude.naturescompass.utils;
+package com.lucalabs.naturescompass.utils;
 
 public enum CompassState {
 

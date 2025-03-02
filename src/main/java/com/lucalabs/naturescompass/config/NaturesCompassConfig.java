@@ -1,6 +1,6 @@
-package com.chaosthedude.naturescompass.config;
+package com.lucalabs.naturescompass.config;
 
-import com.chaosthedude.naturescompass.NaturesCompass;
+import com.lucalabs.naturescompass.NaturesCompass;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;

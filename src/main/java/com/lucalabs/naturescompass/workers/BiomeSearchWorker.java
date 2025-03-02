@@ -1,8 +1,8 @@
-package com.chaosthedude.naturescompass.workers;
+package com.lucalabs.naturescompass.workers;
 
-import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.config.NaturesCompassConfig;
-import com.chaosthedude.naturescompass.utils.BiomeUtils;
+import com.lucalabs.naturescompass.NaturesCompass;
+import com.lucalabs.naturescompass.config.NaturesCompassConfig;
+import com.lucalabs.naturescompass.utils.BiomeUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
@@ -12,8 +12,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeCoords;
-
-import java.util.UUID;
 
 public class BiomeSearchWorker implements WorldWorkerManager.IWorker {
 

@@ -1,17 +1,14 @@
-package com.chaosthedude.naturescompass.items;
+package com.lucalabs.naturescompass.items;
 
-import com.chaosthedude.naturescompass.NaturesCompass;
-import com.chaosthedude.naturescompass.utils.BiomeUtils;
-import com.chaosthedude.naturescompass.utils.CompassState;
-import com.chaosthedude.naturescompass.utils.ItemUtils;
-import com.chaosthedude.naturescompass.workers.BiomeSearchWorker;
+import com.lucalabs.naturescompass.utils.BiomeUtils;
+import com.lucalabs.naturescompass.utils.CompassState;
+import com.lucalabs.naturescompass.utils.ItemUtils;
+import com.lucalabs.naturescompass.workers.BiomeSearchWorker;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -81,9 +78,10 @@ public class NaturesCompassItem extends Item {
             if (!stack.getNbt().contains("ID")) {
                 stack.getNbt().putUuid("ID", UUID.randomUUID());
             }
-        }
 
-        return stack.getNbt().getUuid("ID");
+            return stack.getNbt().getUuid("ID");
+        }
+        return null;
     }
 
     public void setFound(ItemStack stack, int x, int z, int samples, PlayerEntity player) {

@@ -1,9 +1,9 @@
-package com.chaosthedude.naturescompass.network;
+package com.lucalabs.naturescompass.network;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.chaosthedude.naturescompass.NaturesCompass;
+import com.lucalabs.naturescompass.NaturesCompass;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
