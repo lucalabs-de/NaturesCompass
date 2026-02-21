@@ -82,6 +82,7 @@ public class NaturesCompassItem extends Item {
             stack.getNbt().putInt("FoundX", x);
             stack.getNbt().putInt("FoundZ", z);
             stack.getNbt().putInt("Samples", samples);
+            stack.getNbt().putBoolean("invalid", false);
         }
     }
 
@@ -97,6 +98,19 @@ public class NaturesCompassItem extends Item {
         if (ItemUtils.verifyNBT(stack)) {
             stack.getNbt().putString("BiomeID", biomeID.toString());
         }
+    }
+
+    public void setValid(ItemStack stack, boolean valid) {
+        if (ItemUtils.verifyNBT(stack)) {
+            stack.getNbt().putBoolean("invalid", !valid);
+        }
+    }
+
+    public boolean isValid(ItemStack stack) {
+        if (ItemUtils.verifyNBT(stack)) {
+            return Boolean.FALSE.equals(stack.getNbt().getBoolean("invalid"));
+        }
+        return true;
     }
 
     public CompassState getState(ItemStack stack) {
@@ -129,5 +143,16 @@ public class NaturesCompassItem extends Item {
         }
 
         return new Identifier("");
+    }
+
+    public Identifier getDimensionID(ItemStack stack) {
+        if (ItemUtils.verifyNBT(stack)) {
+            String id = stack.getNbt().getString("dimension");
+            if (id != null) {
+                return Identifier.tryParse(id);
+            }
+        }
+
+        return null;
     }
 }

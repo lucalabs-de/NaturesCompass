@@ -142,4 +142,8 @@ public class BiomeUtils {
         return regex.toString();
     }
 
+    public static boolean isIdNether(Identifier id) {
+        return id.equals(World.NETHER.getValue());
+    }
+
 }

@@ -3,6 +3,7 @@ package com.lucalabs.naturescompass;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.lucalabs.naturescompass.config.NaturesCompassConfig;
+import com.lucalabs.naturescompass.events.ServerEventHandler;
 import com.lucalabs.naturescompass.items.NaturesCompassItem;
 import com.lucalabs.naturescompass.network.SearchPacket;
 import com.lucalabs.naturescompass.screens.BiomeChoiceScreenHandler;
@@ -15,12 +16,17 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.poi.PointOfInterestStorage;
+import net.minecraft.world.poi.PointOfInterestTypes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class NaturesCompass implements ModInitializer {
 
@@ -50,9 +56,7 @@ public class NaturesCompass implements ModInitializer {
         allowedBiomes = new ArrayList<>();
         dimensionIDsForAllowedBiomeIDs = ArrayListMultimap.create();
 
-        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(((player, origin, destination) -> {
-            // TODO update world finding
-        }));
+        ServerEventHandler.initialize();
     }
 
 }

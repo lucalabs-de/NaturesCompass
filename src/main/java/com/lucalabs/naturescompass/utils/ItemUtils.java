@@ -8,6 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class ItemUtils {
@@ -20,6 +22,20 @@ public class ItemUtils {
 		}
 
 		return true;
+	}
+
+	public static List<ItemStack> getNatureCompassesInInventory(PlayerEntity player) {
+		List<ItemStack> compasses = new ArrayList<>();
+		PlayerInventory inv = player.getInventory();
+
+		for (int i = 0; i < inv.size(); i++) {
+			ItemStack cur = inv.getStack(i);
+			if (verifyNBT(cur)) {
+				compasses.add(cur);
+			}
+		}
+
+		return compasses;
 	}
 
 	public static ItemStack getNatureCompassInInventory(PlayerEntity player, UUID compassId) {

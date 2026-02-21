@@ -37,6 +37,9 @@ public class SearchPacket extends PacketByteBuf {
             ItemStack compass = inInv.isEmpty() ? underCursor : inInv;
             if (!compass.isEmpty()) {
                 final ServerWorld world = player.getServerWorld();
+                if (ItemUtils.verifyNBT(compass)) {
+                    compass.getNbt().putString("dimension", player.getWorld().getDimensionKey().getValue().toString());
+                }
                 NaturesCompass.NATURES_COMPASS_ITEM.searchForBiome(world, player, compass, biomeID, pos);
             }
         });

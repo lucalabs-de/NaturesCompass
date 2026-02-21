@@ -45,10 +45,9 @@ public class NaturesCompassClient implements ClientModInitializer {
 						world = (ClientWorld) entity.getWorld();
 					}
 
-					boolean rightDimension = true;
 					double adjusted = 0;
 
-					if (rightDimension) {
+					if (NaturesCompass.NATURES_COMPASS_ITEM.isValid(stack)) {
 						double rotation = entityExists ? (double) entity.getYaw() : getFrameRotation((ItemFrameEntity) entity);
 						rotation = rotation % 360.0D;
 						adjusted = Math.PI - ((rotation - 90.0D) * 0.01745329238474369D - getAngle(world, entity, stack));

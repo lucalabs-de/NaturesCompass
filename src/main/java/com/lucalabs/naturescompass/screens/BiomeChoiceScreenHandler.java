@@ -235,16 +235,6 @@ public class BiomeChoiceScreenHandler extends ScreenHandler {
     }
 
     private void searchForBiome(PlayerEntity player, Biome biome, ItemStack compass) {
-
-//        ServerWorld world = (ServerWorld) player.getWorld();
-//        var pois = world.getPointOfInterestStorage();
-//
-//        Optional<BlockPos> nearestPortal = pois.getNearestPosition(
-//                t -> t.matchesKey(PointOfInterestTypes.NETHER_PORTAL),
-//                player.getBlockPos(),
-//                10000,
-//                PointOfInterestStorage.OccupationStatus.ANY);
-
         UUID compassId = NaturesCompass.NATURES_COMPASS_ITEM.getUuid(compass);
         if (compassId != null) {
             ClientPlayNetworking.send(
