@@ -1,27 +1,26 @@
 package com.lucalabs.naturescompass;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.resource.featuretoggle.FeatureSet;
-import net.minecraft.screen.ScreenHandlerType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.lucalabs.naturescompass.screens.BiomeChoiceScreenHandler;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.lucalabs.naturescompass.config.NaturesCompassConfig;
 import com.lucalabs.naturescompass.items.NaturesCompassItem;
 import com.lucalabs.naturescompass.network.SearchPacket;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
-
+import com.lucalabs.naturescompass.screens.BiomeChoiceScreenHandler;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NaturesCompass implements ModInitializer {
 
@@ -50,6 +49,10 @@ public class NaturesCompass implements ModInitializer {
 
         allowedBiomes = new ArrayList<>();
         dimensionIDsForAllowedBiomeIDs = ArrayListMultimap.create();
+
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(((player, origin, destination) -> {
+            // TODO update world finding
+        }));
     }
 
 }

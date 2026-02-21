@@ -3,7 +3,7 @@
   "id": "naturescompass",
   "version": "${version}",
 
-  "name": "Nature's Compass Immersive",
+  "name": "Nature's Compass",
   "description": "Search for a biome and get information about it.",
   "authors": [
     "lucalabs-de",

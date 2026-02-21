@@ -4,6 +4,8 @@ import com.lucalabs.naturescompass.NaturesCompass;
 import com.lucalabs.naturescompass.items.NaturesCompassItem;
 import com.lucalabs.naturescompass.network.SearchPacket;
 import com.lucalabs.naturescompass.utils.BiomeUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,6 +22,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,7 +35,7 @@ public class BiomeChoiceScreenHandler extends ScreenHandler {
 
     private final World world;
     private final Property selectedBiome;
-    private final List<Biome> availableBiomes;
+    private List<Biome> availableBiomes;
     private final ScreenHandlerContext context;
     Runnable contentsChangedListener;
     private boolean areBiomesChoosable;
@@ -220,11 +223,28 @@ public class BiomeChoiceScreenHandler extends ScreenHandler {
         this.contentsChangedListener = contentsChangedListener;
     }
 
+    @Environment(EnvType.CLIENT)
+    public void setAvailableBiomes(List<Biome> biomes) {
+        if (this.availableBiomes.isEmpty()) {
+            this.availableBiomes = biomes;
+        }
+    }
+
     private boolean isInBounds(int id) {
         return id >= 0 && id < this.availableBiomes.size();
     }
 
     private void searchForBiome(PlayerEntity player, Biome biome, ItemStack compass) {
+
+//        ServerWorld world = (ServerWorld) player.getWorld();
+//        var pois = world.getPointOfInterestStorage();
+//
+//        Optional<BlockPos> nearestPortal = pois.getNearestPosition(
+//                t -> t.matchesKey(PointOfInterestTypes.NETHER_PORTAL),
+//                player.getBlockPos(),
+//                10000,
+//                PointOfInterestStorage.OccupationStatus.ANY);
+
         UUID compassId = NaturesCompass.NATURES_COMPASS_ITEM.getUuid(compass);
         if (compassId != null) {
             ClientPlayNetworking.send(

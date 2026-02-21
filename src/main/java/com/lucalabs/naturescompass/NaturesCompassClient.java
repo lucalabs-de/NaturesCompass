@@ -1,6 +1,7 @@
 package com.lucalabs.naturescompass;
 
 import com.lucalabs.naturescompass.items.NaturesCompassItem;
+import com.lucalabs.naturescompass.network.BiomePacket;
 import com.lucalabs.naturescompass.network.SyncPacket;
 import com.lucalabs.naturescompass.utils.CompassState;
 import com.lucalabs.naturescompass.screens.BiomeChoiceScreen;
@@ -24,6 +25,7 @@ public class NaturesCompassClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientPlayNetworking.registerGlobalReceiver(SyncPacket.ID, SyncPacket::apply);
+		ClientPlayNetworking.registerGlobalReceiver(BiomePacket.ID, BiomePacket::apply);
 
 		HandledScreens.register(NaturesCompass.BIOME_SCREEN_HANDLER, BiomeChoiceScreen::new);
 		
@@ -38,14 +40,25 @@ public class NaturesCompassClient implements ClientModInitializer {
 					return 0.0F;
 				} else {
 					final boolean entityExists = entityLiving != null;
-					final Entity entity = (Entity) (entityExists ? entityLiving : stack.getFrame());
-					if (world == null && entity.getWorld() instanceof ClientWorld) {
+					final Entity entity = entityExists ? entityLiving : stack.getFrame();
+					if (world == null && entity != null && entity.getWorld() instanceof ClientWorld) {
 						world = (ClientWorld) entity.getWorld();
 					}
 
-					double rotation = entityExists ? (double) entity.getYaw() : getFrameRotation((ItemFrameEntity) entity);
-					rotation = rotation % 360.0D;
-					double adjusted = Math.PI - ((rotation - 90.0D) * 0.01745329238474369D - getAngle(world, entity, stack));
+					boolean rightDimension = true;
+					double adjusted = 0;
+
+					if (rightDimension) {
+						double rotation = entityExists ? (double) entity.getYaw() : getFrameRotation((ItemFrameEntity) entity);
+						rotation = rotation % 360.0D;
+						adjusted = Math.PI - ((rotation - 90.0D) * 0.01745329238474369D - getAngle(world, entity, stack));
+					} else {
+						adjusted = (world.getTime() * 15) % 360D;
+						if (adjusted == 0 || adjusted == 180) {
+							adjusted += 20;
+						}
+						adjusted = adjusted * 0.01745329238474369D;
+					}
 
 					if (entityExists) {
 						adjusted = wobble(world, adjusted);

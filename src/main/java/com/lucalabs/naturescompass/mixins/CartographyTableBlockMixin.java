@@ -1,15 +1,20 @@
 package com.lucalabs.naturescompass.mixins;
 
 import com.lucalabs.naturescompass.items.NaturesCompassItem;
+import com.lucalabs.naturescompass.network.BiomePacket;
 import com.lucalabs.naturescompass.screens.BiomeChoiceScreenHandler;
+import com.lucalabs.naturescompass.utils.BiomeUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CartographyTableBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -42,6 +47,12 @@ public class CartographyTableBlockMixin {
                 NamedScreenHandlerFactory s = new SimpleNamedScreenHandlerFactory((
                         (syncId, playerInventory, p) -> new BiomeChoiceScreenHandler(syncId, playerInventory, ScreenHandlerContext.create(world, pos))), BIOME_TITLE);
                 player.openHandledScreen(s);
+
+                ServerPlayNetworking.send(
+                        (ServerPlayerEntity) player,
+                        BiomePacket.ID,
+                        new BiomePacket(BiomeUtils.getAllowedBiomeEntries((ServerWorld) player.getWorld())));
+
                 cir.setReturnValue(ActionResult.CONSUME);
             }
         }

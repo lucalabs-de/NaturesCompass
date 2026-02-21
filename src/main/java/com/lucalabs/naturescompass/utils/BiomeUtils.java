@@ -5,20 +5,18 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.BiomeTags;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeSource;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class BiomeUtils {
 
@@ -34,18 +32,42 @@ public class BiomeUtils {
         return getBiomeRegistry(world).getOrEmpty(id);
     }
 
-    public static List<Biome> getAllowedBiomes(World world) {
+    public static Set<RegistryEntry<Biome>> getAllowedBiomeEntries(ServerWorld world) {
         Registry<Biome> biomeRegistry = getBiomeRegistry(world);
+        Set<RegistryEntry<Biome>> biomes = new HashSet<>();
+
+        BiomeSource biomeSource = world.getChunkManager()
+                .getChunkGenerator().getBiomeSource();
+
+        for (RegistryEntry<Biome> entry : biomeSource.getBiomes()) {
+            entry.getKey().ifPresent(k -> {
+                Biome biome = biomeRegistry.get(k);
+                Identifier biomeId = getIdentifierForBiome(world, biome);
+
+                if (!biomeIdIsBlacklisted(world, biomeId)) {
+                    biomes.add(entry);
+                }
+            });
+
+        }
+
+        return biomes;
+    }
+
+    public static List<Biome> getAllowedBiomes(World world) {
+        if (world.isClient()) {
+            return Collections.emptyList();
+        }
+
+        Set<RegistryEntry<Biome>> biomeEntries = getAllowedBiomeEntries((ServerWorld) world);
         List<Biome> biomes = new ArrayList<>();
 
-        for (RegistryKey<Biome> k : biomeRegistry.getKeys()) {
-            Biome biome = biomeRegistry.get(k);
-            Identifier biomeId = getIdentifierForBiome(world, biome);
-            RegistryEntry<Biome> biomeEntry = biomeRegistry.getEntry(k).orElseThrow();
+        for (var entry : biomeEntries) {
+            var id = entry.getKey().orElseThrow().getValue();
+            var biomeRegistry = world.getRegistryManager().get(RegistryKeys.BIOME);
+            Biome biome = biomeRegistry.get(id);
 
-            if (!biomeIdIsBlacklisted(world, biomeId) && biomeEntry.isIn(BiomeTags.IS_OVERWORLD)) {
-                biomes.add(biome);
-            }
+            biomes.add(biome);
         }
 
         return biomes;
