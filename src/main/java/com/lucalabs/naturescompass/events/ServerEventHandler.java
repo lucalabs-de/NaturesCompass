@@ -9,24 +9,10 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.poi.PointOfInterestStorage;
-import net.minecraft.world.poi.PointOfInterestTypes;
-
-import java.util.Optional;
 
 public class ServerEventHandler {
 
     private static void onDimensionChange(ServerPlayerEntity player, ServerWorld origin, ServerWorld dest) {
-
-        var pois = dest.getPointOfInterestStorage();
-
-//        Optional<BlockPos> nearestPortal = pois.getNearestPosition(
-//                t -> t.matchesKey(PointOfInterestTypes.NETHER_PORTAL),
-//                player.getBlockPos(),
-//                100,
-//                PointOfInterestStorage.OccupationStatus.ANY);
-
-        Optional<BlockPos> nearestPortal = Optional.empty();
 
         for (ItemStack compass : ItemUtils.getNatureCompassesInInventory(player)) {
             Identifier playerDimensionId = player.getWorld().getDimensionKey().getValue();
@@ -37,10 +23,10 @@ public class ServerEventHandler {
             }
 
             if (BiomeUtils.isIdNether(dimensionId) ^ BiomeUtils.isIdNether(playerDimensionId)) {
-                NaturesCompass.NATURES_COMPASS_ITEM.setValid(compass, nearestPortal.isPresent());
+                NaturesCompass.NATURES_COMPASS_ITEM.setValid(compass, true);
 
-                nearestPortal.ifPresent(pos ->
-                        NaturesCompass.NATURES_COMPASS_ITEM.setFound(compass, pos.getX(), pos.getZ(), 0, player));
+                BlockPos pos = player.getBlockPos();
+                NaturesCompass.NATURES_COMPASS_ITEM.setFound(compass, pos.getX(), pos.getZ(), 0, player);
             } else if (!playerDimensionId.equals(dimensionId)) {
                 NaturesCompass.NATURES_COMPASS_ITEM.setValid(compass, false);
             } else {

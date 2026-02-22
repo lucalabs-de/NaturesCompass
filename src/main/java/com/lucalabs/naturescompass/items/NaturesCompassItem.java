@@ -38,10 +38,8 @@ public class NaturesCompassItem extends Item {
         Identifier associatedBiomeId = getBiomeID(stack);
         Optional<Biome> associatedBiome = BiomeUtils.getBiomeForIdentifier(world, associatedBiomeId);
 
-        if (associatedBiome.isPresent()) {
-            tooltip.add(Text.literal(BiomeUtils.getBiomeNameForDisplay(world, associatedBiome.get()))
-                    .formatted(Formatting.GOLD));
-        }
+        associatedBiome.ifPresent(biome -> tooltip.add(Text.literal(BiomeUtils.getBiomeNameForDisplay(world, biome))
+                .formatted(Formatting.GOLD)));
     }
 
     public void searchForBiome(ServerWorld world, PlayerEntity player, ItemStack stack, Identifier biomeId, BlockPos pos) {

@@ -76,7 +76,12 @@ public class BiomeChoiceScreen extends HandledScreen<BiomeChoiceScreenHandler> {
             entry(new Identifier("minecraft", "cold_ocean"), Items.COD_BUCKET),
             entry(new Identifier("minecraft", "deep_cold_ocean"), Items.COD_BUCKET),
             entry(new Identifier("minecraft", "frozen_ocean"), Items.BLUE_ICE),
-            entry(new Identifier("minecraft", "deep_frozen_ocean"), Items.BLUE_ICE)
+            entry(new Identifier("minecraft", "deep_frozen_ocean"), Items.BLUE_ICE),
+            entry(new Identifier("minecraft", "nether_wastes"), Items.NETHERRACK),
+            entry(new Identifier("minecraft", "warped_forest"), Items.WARPED_FUNGUS),
+            entry(new Identifier("minecraft", "crimson_forest"), Items.CRIMSON_FUNGUS),
+            entry(new Identifier("minecraft", "soul_sand_valley"), Items.SOUL_SAND),
+            entry(new Identifier("minecraft", "basalt_deltas"), Items.BASALT)
     );
 
     private float scrollAmount;

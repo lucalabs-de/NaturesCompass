@@ -20,6 +20,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 
+import java.util.WeakHashMap;
+
 public class NaturesCompassClient implements ClientModInitializer {
 
 	@Override
@@ -30,9 +32,7 @@ public class NaturesCompassClient implements ClientModInitializer {
 		HandledScreens.register(NaturesCompass.BIOME_SCREEN_HANDLER, BiomeChoiceScreen::new);
 		
 		ModelPredicateProviderRegistry.register(NaturesCompass.NATURES_COMPASS_ITEM, new Identifier("angle"), new ClampedModelPredicateProvider() {
-			private double rotation;
-			private double rota;
-			private long lastUpdateTick;
+			private final WeakHashMap<ItemStack, InterpolationData> interpolationData = new WeakHashMap<>();
 
 			@Override
 			public float unclampedCall(ItemStack stack, ClientWorld world, LivingEntity entityLiving, int seed) {
@@ -60,7 +60,7 @@ public class NaturesCompassClient implements ClientModInitializer {
 					}
 
 					if (entityExists) {
-						adjusted = wobble(world, adjusted);
+						adjusted = interpolateToNewRotation(world, getInterpolationData(stack), adjusted);
 					}
 
 					final float f = (float) (adjusted / (Math.PI * 2D));
@@ -68,18 +68,19 @@ public class NaturesCompassClient implements ClientModInitializer {
 				}
 			}
 
-			private double wobble(ClientWorld world, double amount) {
-				if (world.getTime() != lastUpdateTick) {
-					lastUpdateTick = world.getTime();
-					double d0 = amount - rotation;
+			private double interpolateToNewRotation(ClientWorld world, InterpolationData data, double newRotation) {
+				if (world.getTime() != data.lastUpdateTick) {
+					data.lastUpdateTick = world.getTime();
+					double d0 = newRotation - data.rotation;
+					// normalize to [-pi, pi] to take the shortest route
 					d0 = d0 % (Math.PI * 2D);
 					d0 = MathHelper.floorMod(d0 + Math.PI, Math.PI * 2D) - Math.PI;
-					rota += d0 * 0.1D;
-					rota *= 0.8D;
-					rotation += rota;
+					data.rota += d0 * 0.1D;
+					data.rota *= 0.8D;
+					data.rotation += data.rota;
 				}
 
-				return rotation;
+				return data.rotation;
 			}
 
 			private double getFrameRotation(ItemFrameEntity itemFrame) {
@@ -99,7 +100,26 @@ public class NaturesCompassClient implements ClientModInitializer {
 				}
 				return 0.0D;
 			}
+
+			private InterpolationData getInterpolationData(ItemStack stack) {
+				if (!interpolationData.containsKey(stack)) {
+					interpolationData.put(stack, new InterpolationData());
+				}
+				return interpolationData.get(stack);
+			}
 		});
+	}
+
+	private static class InterpolationData {
+		double rotation;
+		double rota;
+		long lastUpdateTick;
+
+		InterpolationData() {
+			this.rotation = 0;
+			this.rota = 0;
+			this.lastUpdateTick = 0;
+		}
 	}
 
 }
